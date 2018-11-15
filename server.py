@@ -1,28 +1,45 @@
 from flask import Flask, jsonify, request
+from main import user
+import datetime
 app = Flask(__name__)
 
 
 @app.route("/api/new_patient", methods=["POST"])
 def new_patient():
     """
-      Returns the patient's id, email, and age
+    Post patient's id, email, and age
     """
     r = request.get_json()
-    patient_id = r["patient_id"]
-    email = r["attending_email"]
-    age = r["user_age"]
-    return patient_id, email, age
-
-
-@app.route("/api/heart_rate", methods=["POST"])
-def heart_rate():
-    r = request.get_json()
+    user.patient_id = r["patient_id"]
+    user.email = r["attending_email"]
+    user.age = r["user_age"]
     answer = {
-        "patient_id": "1",
-        "heart_rate": 100,
+        "patient_id": user.patient_id,
+        "attending_email": user.email,
+        "user_age": user.age,
     }
-    return jsonify(answer)
+    return jsonify(answer), 200
 
+
+@app.route("/api/heart_rate",methods=["POST"])
+def heart_rate():
+    """
+	post the new information about the heart rate measurement
+	and time
+	"""
+    r = request.get_json()
+    if user.patient_id is r["patient_id"]:
+        user.heart_rate = r["heart_rate"]
+        user.time = datetime.datetime.now()
+        answer = {
+            "heart_rate_average_since": user.time,
+            "patient_id": user.patient_id,
+            "heart_rate": user.heart_rate,
+		}
+        return jsonify(answer), 200
+    else:
+        answer = {"Warning": "This user is not existing"}
+        return jsonify(answer), 400
 
 @app.route("/", methods=["GET"])
 def hello():

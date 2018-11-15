@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from main import user
+from disease import disease
 import datetime
 app = Flask(__name__)
 
@@ -67,20 +68,21 @@ def getData():
     return jsonify(data)
 
 
-@app.route("/api/heart_rate/average/<user_email>",methods=["GET"])
-def average(user_email):
+@app.route("/api/heart_rate/average/<patient_id>",methods=["GET"])
+def average(patient_id):
     """
 	return average for all measurements
 	"""
-    user = models.User.objects.raw({"_id": user_email}).first()
-    aver = sum(user.heart_rate)/len(user.heart_rate)
-    tah = ta(user.age, aver)
-    if tah > 1:
-		stm = "this person may have Tachycardia"
+# somehow grab the user and take the information from database
+    average_heart_rate = sum(user.heart_rate)/len(user.heart_rate)
+    result = disease(user.age, average_heart_rate)
+    if result:
+		message = "Warning: the patient has Tachycardia"
 	else:
-		stm = "this person's heart rate is normal"
-	average = {
-		"average": aver,
-		"health condition": stm
+		message = "Normal health condition"
+	answer = {
+		"average": average_heart_rate,
+		"health condition": message
 	}
-	return jsonify(average),200
+	return jsonify(answer),200
+

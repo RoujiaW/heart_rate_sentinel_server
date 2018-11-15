@@ -1,8 +1,15 @@
 from flask import Flask, jsonify, request
-from main import user
 from disease import disease
+from database import User
 import datetime
 app = Flask(__name__)
+
+
+def add_heart_rate(patient_id, heart_rate, time):
+    user = User.objects.raw({"patient_id": patient_id}).first() # Get the first user where _id=email
+    user.heart_rate.append(heart_rate) # Append the heart_rate to the user's list of heart rates
+    user.heart_rate_times.append(time) # append the current time to the user's list of heart rate times
+    user.save() # save the user to the database
 
 
 @app.route("/api/new_patient", methods=["POST"])
@@ -11,15 +18,9 @@ def new_patient():
     Post patient's id, email, and age
     """
     r = request.get_json()
-    user.patient_id = r["patient_id"]
-    user.email = r["attending_email"]
-    user.age = r["user_age"]
-    answer = {
-        "patient_id": user.patient_id,
-        "attending_email": user.email,
-        "user_age": user.age,
-    }
-    return jsonify(answer), 200
+    user = User(r["patient_id"], r["attending_email"], r["user_age"])
+    user.save()
+    # return jsonify(answer), 200
 
 
 @app.route("/api/heart_rate",methods=["POST"])
@@ -29,18 +30,11 @@ def heart_rate():
 	and time
 	"""
     r = request.get_json()
-    if user.patient_id is r["patient_id"]:
-        user.heart_rate = r["heart_rate"]
-        user.time = datetime.datetime.now()
-        answer = {
-            "heart_rate_average_since": user.time,
-            "patient_id": user.patient_id,
-            "heart_rate": user.heart_rate,
-		}
-        return jsonify(answer), 200
-    else:
-        answer = {"Warning": "This user is not existing"}
-        return jsonify(answer), 400
+    user = User.objects.raw({"user_id": r["patient_id"]}).first()
+    user.heart_rate.append(r["heart_rate"])
+    user.times.append(datetime.datetime.now())
+    # return jsonify(answer), 200
+
 
 @app.route("/", methods=["GET"])
 def hello():

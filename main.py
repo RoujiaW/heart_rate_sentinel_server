@@ -17,4 +17,3 @@ class user():
              "heart_rate": self.heart_rate,
              "heart_rate_average_since": self.time
          }
-

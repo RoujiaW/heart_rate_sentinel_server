@@ -4,12 +4,14 @@ app = Flask(__name__)
 
 @app.route("/api/new_patient", methods=["POST"])
 def new_patient():
-    answer = {
-        "patient_id": "1",  # usually this would be the patient MRN
-        "attending_email": "suyash.kumar@duke.edu",
-        "user_age": 50,  # in years
-    }
-    return jsonify(answer)
+    """
+      Returns the patient's id, email, and age
+    """
+    r = request.get_json()
+    patient_id = r["patient_id"]
+    email = r["attending_email"]
+    age = r["user_age"]
+    return patient_id, email, age
 
 
 @app.route("/api/heart_rate", methods=["POST"])

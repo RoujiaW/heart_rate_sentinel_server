@@ -2,7 +2,7 @@ from pymodm import connect
 from pymodm import MongoModel, fields
 
 
-connect("mongodb://vcm-7305.vm.duke.edu/heart_rate_server")
+connect("mongodb://<dbuser>:<dbpassword>@ds163683.mlab.com:63683/bme590")
 
 
 class User(MongoModel):

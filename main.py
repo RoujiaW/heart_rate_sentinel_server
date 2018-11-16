@@ -1,19 +1,22 @@
-class user():
-    """
-    """
+import requests
 
-    def __init__(self, patient_id, email, age, heart_rate, time):
-        self.patient_id = patient_id
-        self.email = None
-        self.age = None
-        self.heart_rate = None
-        self.time = None
 
-    def as_dict(self):
-        return {
-             "patient_id": self.patient_id,
-             "attending_email": self.email,
-             "user_age": self.age,
-             "heart_rate": self.heart_rate,
-             "heart_rate_average_since": self.time
-         }
+r = requests.post("http://127.0.0.1:5000/api/new_patient",
+                  json={"patient_id": "1",
+                        "attending_email": "roujiw@uw.edu",
+                        "user_age": "50"})
+print(r.json())
+r = requests.post("http://127.0.0.1:5000/api/heart_rate",
+                  json={"patient_id": "1", "heart_rate": 100})
+print(r.json())
+r = requests.get("http://127.0.0.1:5000/api/status/1")
+print(r.json())
+r = requests.get("http://127.0.0.1:5000/api/heart_rate/1")
+print(r.json())
+r = requests.get("http://127.0.0.1:5000/api/heart_rate/average/1")
+print(r.json())
+r = requests.post("http://127.0.0.1:5000/api/heart_rate/interval_average",
+                  json={"patient_id": "1",
+                        "heart_rate_average_since":
+                            "2018-03-09 11:00:36.372339"})
+print(r.json())

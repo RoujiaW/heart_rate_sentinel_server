@@ -117,4 +117,3 @@ def interval_average():
     else:
         answer = {"Interval average": ave}
         return jsonify(answer), 200
-

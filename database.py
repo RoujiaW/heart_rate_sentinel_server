@@ -2,11 +2,11 @@ from pymodm import connect
 from pymodm import MongoModel, fields
 
 
-connect("mongodb://<dbuser>:<dbpassword>@ds163683.mlab.com:63683/bme590")
+connect("mongodb://roujiw:wrj1995@ds163683.mlab.com:63683/bme590")
 
 
 class User(MongoModel):
-    user_id = fields.IntegerField(primary_key=True)
+    user_id = fields.CharField(primary_key=True)
     email = fields.EmailField()
     age = fields.IntegerField()
     heart_rate = fields.ListField(field=fields.IntegerField())

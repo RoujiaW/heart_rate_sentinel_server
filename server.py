@@ -9,6 +9,9 @@ connect("mongodb://roujiw:wrj1995@ds163683.mlab.com:63683/bme590")
 
 @app.route("/hello")
 def hello():
+    """
+    Welcome page
+    """
     return "Hello, world"
 
 
@@ -16,6 +19,7 @@ def hello():
 def new_patient():
     """
     Post patient's id, email, and age
+    :return jsonify file
     """
     r = request.get_json()
     user = User(r["patient_id"], r["attending_email"], r["user_age"])
@@ -23,7 +27,6 @@ def new_patient():
     answer = {
         "Message": "User create successfully",
     }
-    print(answer)
     return jsonify(answer), 200
 
 
@@ -31,6 +34,7 @@ def new_patient():
 def heart_rate():
     """
     post the new information about the heart rate measurement and time
+    :return jsonify file
     """
     r = request.get_json()
     if isinstance(r["patient_id"], str) and isinstance(r["heart_rate"], int):
@@ -57,7 +61,8 @@ def heart_rate():
 @app.route("/api/status/<patient_id>", methods=["GET"])
 def status(patient_id):
     """
-    :return: patient's health condition
+    Get patient health condition
+    :return: jsonify file
     """
     user = User.objects.raw({"_id": patient_id}).first()
     answer = {
@@ -70,7 +75,7 @@ def status(patient_id):
 @app.route("/api/heart_rate/<patient_id>", methods=["GET"])
 def heart_rate2(patient_id):
     """
-    :return: list of heart rate
+    :return: jsonify list of heart rate
     """
     user = User.objects.raw({"_id": patient_id}).first()
     result = {
@@ -82,7 +87,7 @@ def heart_rate2(patient_id):
 @app.route("/api/heart_rate/average/<patient_id>", methods=["GET"])
 def average(patient_id):
     """
-    :return: average for all heart rate data
+    :return: jsonify average for all heart rate data
     """
     user = User.objects.raw({"_id": patient_id}).first()
     average_heart_rate = sum(user.heart_rate)/len(user.heart_rate)

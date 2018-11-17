@@ -103,22 +103,20 @@ def interval_average():
     :return: interval_average based on user input
     """
     r = request.get_json()
+    heart_rate_interval = []
     if isinstance((r["patient_id"]), str):
         user = User.objects.raw({"_id": r["patient_id"]}).first()
         input_time = datetime.strptime(r["heart_rate_average_since"],
                                        '%Y-%m-%d %H:%M:%S.%f')
-        ave = None
         for i in user.times:
             if input_time >= i:
-                index = user.times(i)
-                end = len(user.heart_rate) - 1
-                heart_rate_interval = user.heart_rate[index: end]
-                ave = sum(heart_rate_interval)/len(heart_rate_interval)
+                index = user.times.index(i)
+                heart_rate_interval.append(user.heart_rate[index])
     else:
         raise TypeError("Please enter patient_id and heart_rate as integers")
-    if ave is None:
-        answer = {"Warning": "Input time is not existing"}
-        return jsonify(answer), 200
+    if len(heart_rate_interval) > 0:
+        ave = sum(heart_rate_interval) / len(heart_rate_interval)
+        answer = {"Interval average": str(ave)}
     else:
-        answer = {"Interval average": ave}
-        return jsonify(answer), 200
+        answer = {"Warning": "Input time is not existing"}
+    return jsonify(answer)

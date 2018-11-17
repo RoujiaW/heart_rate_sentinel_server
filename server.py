@@ -120,3 +120,7 @@ def interval_average():
     else:
         answer = {"Warning": "Input time is not existing"}
     return jsonify(answer)
+
+
+if __name__ == "__main__":
+    app.run(host="//0.0.0.0")

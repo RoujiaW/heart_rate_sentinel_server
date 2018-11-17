@@ -1,4 +1,12 @@
 def disease(age, heart_rate):
+    """
+    find mean heart rate based on user input
+    :param age: a int
+    :param heart_rate: a int
+    :raises TypeError:  if type of inputs are incorrect
+    :returns: result of disease
+    :rtype: boolean
+    """
     if type(age) is int and type(heart_rate) is int:
         if age >= 1 and age < 3 and heart_rate > 151:
             result = True
